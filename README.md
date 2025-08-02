@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Enabled-blue.svg)](https://claude.ai/code)
-[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)](https://github.com/your-org/template-agenticide-vibecoding)
+[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)](https://github.com/quboqin/template-agenticide-vibecoding)
 
 ## 🎯 项目概述
 
@@ -87,7 +87,7 @@ graph LR
 
 1. **克隆模板仓库**
    ```bash
-   git clone https://github.com/your-org/template-agenticide-vibecoding.git
+   git clone https://github.com/quboqin/template-agenticide-vibecoding.git
    cd template-agenticide-vibecoding
    ```
 
@@ -609,10 +609,10 @@ git lfs track "*.zip" "*.tar.gz" "*.dmg"
 
 ## 📞 支持与联系
 
-- **问题报告**: [GitHub Issues](https://github.com/your-org/template-agenticide-vibecoding/issues)
-- **功能请求**: [GitHub Discussions](https://github.com/your-org/template-agenticide-vibecoding/discussions)
-- **文档网站**: [项目文档](https://your-org.github.io/template-agenticide-vibecoding)
-- **社区交流**: [Discord服务器](https://discord.gg/your-channel)
+- **问题报告**: [GitHub Issues](https://github.com/quboqin/template-agenticide-vibecoding/issues)
+- **功能请求**: [GitHub Discussions](https://github.com/quboqin/template-agenticide-vibecoding/discussions)
+- **文档网站**: [项目文档](https://quboqin.github.io/template-agenticide-vibecoding)
+- **社区交流**: [社区讨论](https://github.com/quboqin/template-agenticide-vibecoding/discussions)
 
 ---
 
@@ -620,6 +620,6 @@ git lfs track "*.zip" "*.tar.gz" "*.dmg"
 
 **🚀 让AI助力您的软件开发之旅！**
 
-[开始使用](https://github.com/your-org/template-agenticide-vibecoding/blob/main/docs/getting-started.md) | [API文档](https://your-org.github.io/template-agenticide-vibecoding/api) | [示例项目](https://github.com/your-org/template-agenticide-vibecoding/tree/main/examples)
+[开始使用](https://github.com/quboqin/template-agenticide-vibecoding/blob/main/README.md#-快速开始) | [发布版本](https://github.com/quboqin/template-agenticide-vibecoding/releases) | [贡献指南](https://github.com/quboqin/template-agenticide-vibecoding/blob/main/CONTRIBUTING.md)
 
 </div>

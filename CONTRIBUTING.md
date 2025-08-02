@@ -5,12 +5,12 @@
 ## 🎯 贡献方式
 
 ### 🐛 报告问题
-- 使用[GitHub Issues](https://github.com/your-org/template-agenticide-vibecoding/issues)报告bug
+- 使用[GitHub Issues](https://github.com/quboqin/template-agenticide-vibecoding/issues)报告bug
 - 提供详细的重现步骤和环境信息
 - 包含相关的配置文件和错误日志
 
 ### ✨ 功能建议
-- 在[GitHub Discussions](https://github.com/your-org/template-agenticide-vibecoding/discussions)中提出新功能想法
+- 在[GitHub Discussions](https://github.com/quboqin/template-agenticide-vibecoding/discussions)中提出新功能想法
 - 描述功能的使用场景和预期效果
 - 参与社区讨论，完善功能设计
 
@@ -34,7 +34,7 @@
 4. 运行初始化脚本
 
 ```bash
-git clone https://github.com/your-username/template-agenticide-vibecoding.git
+git clone https://github.com/quboqin/template-agenticide-vibecoding.git
 cd template-agenticide-vibecoding
 ./scripts/git-worktree-manager.sh init
 ```
@@ -275,8 +275,8 @@ Closes #[issue number]
 ### 联系方式
 - **GitHub Issues**: 技术问题和bug报告
 - **GitHub Discussions**: 功能讨论和使用问题
-- **Email**: maintainers@your-org.com
-- **Discord**: [社区Discord频道](https://discord.gg/your-channel)
+- **Email**: quboqin@gmail.com
+- **社区讨论**: [GitHub Discussions](https://github.com/quboqin/template-agenticide-vibecoding/discussions)
 
 ### 响应时间
 - Issues: 2-3个工作日
