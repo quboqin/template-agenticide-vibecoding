@@ -1,0 +1,185 @@
+name: 🤖 New Agent Role
+description: 建议新的AI Agent角色
+title: "[AGENT] "
+labels: ["agent-role", "enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您建议新的Agent角色！请详细描述这个Agent的职责和能力。
+
+  - type: input
+    id: agent-name
+    attributes:
+      label: Agent名称
+      description: 为新Agent起一个描述性的名称
+      placeholder: "例如: Data Scientist Agent, Mobile Developer Agent"
+    validations:
+      required: true
+
+  - type: textarea
+    id: role-definition
+    attributes:
+      label: 角色定义
+      description: 这个Agent的主要职责是什么？它在开发流程中扮演什么角色？
+      placeholder: |
+        这个Agent负责...
+        它的主要价值在于...
+        在团队中的定位是...
+    validations:
+      required: true
+
+  - type: textarea
+    id: responsibilities
+    attributes:
+      label: 核心职责
+      description: 列出这个Agent的主要职责和任务
+      placeholder: |
+        - 职责1: 描述...
+        - 职责2: 描述...
+        - 职责3: 描述...
+    validations:
+      required: true
+
+  - type: textarea
+    id: tools
+    attributes:
+      label: 主要工具
+      description: 这个Agent需要使用哪些工具？
+      placeholder: |
+        - 工具1: 用途说明
+        - 工具2: 用途说明
+        - MCP服务器: 如果需要特定的MCP集成
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: 定制化Commands
+      description: 为这个Agent设计专用的命令
+      render: yaml
+      placeholder: |
+        # 示例Commands配置
+        agent_commands:
+          - name: /agent-specific-command
+            description: 命令描述
+            category: development
+            parameters:
+              - name: param1
+                required: true
+    validations:
+      required: true
+
+  - type: textarea
+    id: workflows
+    attributes:
+      label: 工作流程
+      description: 描述这个Agent的典型工作流程
+      placeholder: |
+        1. 接收任务/需求
+        2. 分析和规划
+        3. 执行具体操作
+        4. 验证和交付
+        5. 文档和报告
+    validations:
+      required: true
+
+  - type: textarea
+    id: collaboration
+    attributes:
+      label: 协作模式
+      description: 这个Agent如何与其他Agent协作？
+      placeholder: |
+        与PM Agent: 接收任务分配...
+        与Architect Agent: 协调设计决策...
+        与其他Agent: 具体协作方式...
+    validations:
+      required: true
+
+  - type: textarea
+    id: kpis
+    attributes:
+      label: 关键指标
+      description: 如何衡量这个Agent的工作效果？
+      placeholder: |
+        - 效率指标: 任务完成时间、质量分数等
+        - 质量指标: 错误率、用户满意度等
+        - 协作指标: 与其他Agent的配合效果
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: integration
+    attributes:
+      label: 集成需求
+      description: 这个Agent需要与哪些现有系统集成？
+      options:
+        - label: Git Worktree工作流
+        - label: 现有Hook系统
+        - label: MCP服务器
+        - label: 项目管理工具
+        - label: CI/CD流水线
+        - label: 监控和分析系统
+        - label: 其他外部工具
+
+  - type: dropdown
+    id: complexity
+    attributes:
+      label: 实现复杂度
+      description: 您认为实现这个Agent的复杂度如何？
+      options:
+        - 低 - 基于现有模式扩展
+        - 中 - 需要一些新的集成
+        - 高 - 需要显著的新功能
+        - 很高 - 需要架构级别的改动
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-cases
+    attributes:
+      label: 使用场景
+      description: 提供一些具体的使用场景或案例
+      placeholder: |
+        场景1: 在移动应用开发项目中...
+        场景2: 当团队需要数据分析时...
+        场景3: 处理特定类型的任务时...
+    validations:
+      required: true
+
+  - type: textarea
+    id: similar-tools
+    attributes:
+      label: 参考工具
+      description: 是否有类似的工具或系统可以参考？
+      placeholder: |
+        参考工具1: 功能特点...
+        参考工具2: 优缺点分析...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: 贡献意愿
+      description: 您是否愿意参与这个Agent的开发？
+      options:
+        - label: 我愿意帮助详细设计这个Agent
+        - label: 我愿意参与配置文件编写
+        - label: 我愿意帮助测试和优化
+        - label: 我愿意编写使用文档
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 检查清单
+      description: 在提交前请确认以下事项
+      options:
+        - label: 我已经检查了现有的Agent角色，确认这是新的需求
+          required: true
+        - label: 我已经阅读了Agent开发文档
+          required: true
+        - label: 这个Agent符合项目的整体架构和目标
+          required: true

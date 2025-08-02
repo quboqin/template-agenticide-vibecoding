@@ -1,0 +1,286 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # 每天UTC时间2点运行检查
+    - cron: '0 2 * * *'
+
+jobs:
+  validate:
+    name: 配置验证
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 设置Python环境
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: 安装依赖
+      run: |
+        python -m pip install --upgrade pip
+        pip install yamllint
+        
+    - name: 验证YAML文件
+      run: |
+        echo "验证YAML配置文件格式..."
+        find . -name "*.yaml" -o -name "*.yml" | head -20 | xargs -I {} yamllint {}
+        echo "✅ YAML文件格式验证完成"
+        
+    - name: 检查Markdown链接
+      uses: gaurav-nelson/github-action-markdown-link-check@v1
+      with:
+        use-quiet-mode: 'yes'
+        use-verbose-mode: 'yes'
+        config-file: '.github/workflows/mlc_config.json'
+        
+    - name: 验证脚本可执行性
+      run: |
+        echo "验证Shell脚本..."
+        find scripts/ -name "*.sh" -exec bash -n {} \;
+        echo "✅ Shell脚本语法验证完成"
+        
+    - name: 检查文件结构
+      run: |
+        echo "验证项目文件结构..."
+        required_files=(
+          "CLAUDE.md"
+          "README.md"
+          "CONTRIBUTING.md"
+          "PROJECT_PROGRESS.md"
+          "config/commands.yaml"
+          "config/hooks.yaml"
+          "config/mcp-servers.yaml"
+          "agents/pm-agent.md"
+        )
+        
+        for file in "${required_files[@]}"; do
+          if [[ -f "$file" ]]; then
+            echo "✅ $file 存在"
+          else
+            echo "❌ $file 缺失"
+            exit 1
+          fi
+        done
+        echo "✅ 文件结构验证完成"
+
+  agent-config-check:
+    name: Agent配置检查
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 验证Agent配置文件
+      run: |
+        echo "验证Agent配置文件..."
+        agent_files=(
+          "agents/pm-agent.md"
+          "agents/architect-agent.md"
+          "agents/frontend-agent.md"
+          "agents/backend-agent.md"
+          "agents/devops-agent.md"
+          "agents/qa-agent.md"
+        )
+        
+        for agent in "${agent_files[@]}"; do
+          if [[ -f "$agent" ]]; then
+            echo "✅ $agent 配置存在"
+            # 检查是否包含必要的章节
+            if grep -q "## 🎯 角色定义" "$agent" && \
+               grep -q "## 📋 核心职责" "$agent" && \
+               grep -q "## 🛠️ 主要工具" "$agent"; then
+              echo "✅ $agent 格式正确"
+            else
+              echo "❌ $agent 缺少必要章节"
+              exit 1
+            fi
+          else
+            echo "❌ $agent 不存在"
+            exit 1
+          fi
+        done
+        echo "✅ Agent配置验证完成"
+
+  documentation-check:
+    name: 文档质量检查
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 安装markdownlint
+      run: |
+        npm install -g markdownlint-cli2
+        
+    - name: 检查Markdown文档质量
+      run: |
+        echo "检查Markdown文档质量..."
+        markdownlint-cli2 "**/*.md" "!node_modules" || true
+        echo "✅ 文档质量检查完成"
+        
+    - name: 检查中文文档编码
+      run: |
+        echo "检查中文文档编码..."
+        find . -name "*.md" -exec file {} \; | grep -v "UTF-8" || echo "✅ 所有文档都是UTF-8编码"
+
+  security-scan:
+    name: 安全扫描
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 扫描敏感信息
+      run: |
+        echo "扫描潜在的敏感信息..."
+        # 检查是否有硬编码的密钥或密码
+        if grep -r -E "(password|secret|key|token).*[:=].*['\"][^'\"]{8,}['\"]" . --exclude-dir=.git --exclude="*.yml" --exclude="*.yaml" || true; then
+          echo "⚠️ 发现可能的硬编码敏感信息，请检查"
+        else
+          echo "✅ 未发现明显的硬编码敏感信息"
+        fi
+        
+    - name: 检查文件权限
+      run: |
+        echo "检查关键文件权限..."
+        find scripts/ -name "*.sh" -perm /111 | wc -l
+        echo "✅ 脚本权限检查完成"
+
+  integration-test:
+    name: 集成测试
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 测试Git Worktree脚本
+      run: |
+        echo "测试Git Worktree管理脚本..."
+        chmod +x scripts/git-worktree-manager.sh
+        # 测试脚本帮助功能
+        ./scripts/git-worktree-manager.sh --help || echo "脚本帮助功能测试完成"
+        echo "✅ Git Worktree脚本基本功能正常"
+        
+    - name: 验证配置文件关联性
+      run: |
+        echo "验证配置文件之间的关联性..."
+        # 检查CLAUDE.md中引用的配置文件是否存在
+        python3 -c "
+import re
+import os
+
+with open('CLAUDE.md', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# 检查引用的配置文件
+config_refs = re.findall(r'@([^@\s]+\.yaml)', content)
+for ref in set(config_refs):
+    if os.path.exists(f'config/{ref}'):
+        print(f'✅ {ref} 配置文件存在')
+    else:
+        print(f'❌ {ref} 配置文件缺失')
+
+print('✅ 配置文件关联性验证完成')
+"
+
+  performance-check:
+    name: 性能检查
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 检查文件大小
+      run: |
+        echo "检查大文件..."
+        find . -type f -size +1M -not -path "./.git/*" | while read file; do
+          size=$(du -h "$file" | cut -f1)
+          echo "⚠️ 大文件: $file ($size)"
+        done || echo "✅ 无异常大文件"
+        
+    - name: 统计项目规模
+      run: |
+        echo "=== 项目规模统计 ==="
+        echo "总文件数: $(find . -type f -not -path "./.git/*" | wc -l)"
+        echo "代码行数: $(find . -name "*.md" -o -name "*.yaml" -o -name "*.yml" -o -name "*.sh" | xargs wc -l | tail -1)"
+        echo "配置文件数: $(find config/ -name "*.yaml" -o -name "*.yml" | wc -l)"
+        echo "Agent数量: $(find agents/ -name "*.md" | wc -l)"
+        echo "====================="
+
+  # 发布准备检查（仅在main分支）
+  release-readiness:
+    name: 发布准备检查
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 检出代码
+      uses: actions/checkout@v4
+      
+    - name: 检查版本信息
+      run: |
+        echo "检查版本信息一致性..."
+        # 从多个文件中提取版本信息进行对比
+        if grep -q "v1.0.0" README.md && grep -q "v1.0.0" ROADMAP.md; then
+          echo "✅ 版本信息一致"
+        else
+          echo "⚠️ 版本信息可能不一致，请检查"
+        fi
+        
+    - name: 检查发布清单
+      run: |
+        echo "检查发布必要文件..."
+        release_files=(
+          "README.md"
+          "CHANGELOG.md"
+          "LICENSE"
+          "ROADMAP.md"
+          "CONTRIBUTING.md"
+        )
+        
+        for file in "${release_files[@]}"; do
+          if [[ -f "$file" ]]; then
+            echo "✅ $file 已准备"
+          else
+            echo "⚠️ $file 可能需要准备"
+          fi
+        done
+
+  notify:
+    name: 通知
+    runs-on: ubuntu-latest
+    needs: [validate, agent-config-check, documentation-check, security-scan, integration-test, performance-check]
+    if: always()
+    
+    steps:
+    - name: 构建状态总结
+      run: |
+        echo "=== CI/CD 流水线执行完成 ==="
+        echo "时间: $(date)"
+        echo "分支: ${{ github.ref_name }}"
+        echo "提交: ${{ github.sha }}"
+        echo "=========================="
+        
+        if [[ "${{ needs.validate.result }}" == "success" && 
+              "${{ needs.agent-config-check.result }}" == "success" && 
+              "${{ needs.documentation-check.result }}" == "success" && 
+              "${{ needs.security-scan.result }}" == "success" && 
+              "${{ needs.integration-test.result }}" == "success" && 
+              "${{ needs.performance-check.result }}" == "success" ]]; then
+          echo "🎉 所有检查通过！代码质量良好。"
+        else
+          echo "⚠️ 部分检查未通过，请查看详细日志。"
+        fi

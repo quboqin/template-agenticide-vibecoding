@@ -1,0 +1,107 @@
+name: 🐛 Bug Report
+description: 报告一个bug帮助我们改进
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您报告bug！请尽可能详细地描述问题，这将帮助我们更快地修复。
+  
+  - type: input
+    id: system-info
+    attributes:
+      label: 系统信息
+      description: 您的操作系统和Claude Code版本
+      placeholder: "例如: macOS 14.0, Claude Code 1.2.0"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug描述
+      description: 清楚简洁地描述bug是什么
+      placeholder: 描述您遇到的问题...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重现步骤
+      description: 重现此问题的步骤
+      placeholder: |
+        1. 运行命令 '...'
+        2. 点击 '....'
+        3. 看到错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期行为
+      description: 您期望发生什么？
+      placeholder: 描述您期望的行为...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为
+      description: 实际发生了什么？
+      placeholder: 描述实际发生的情况...
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: 相关配置
+      description: 如果适用，请粘贴相关的配置文件内容
+      render: yaml
+      placeholder: |
+        # 粘贴您的 CLAUDE.md 或其他相关配置片段
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 错误日志
+      description: 如果有任何错误信息，请粘贴在这里
+      render: shell
+      placeholder: 粘贴错误日志...
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: agent-type
+    attributes:
+      label: 相关Agent角色
+      description: 此问题涉及哪些Agent角色？
+      options:
+        - label: PM Agent (项目管理)
+        - label: Architect Agent (系统架构)
+        - label: Frontend Agent (前端开发)
+        - label: Backend Agent (后端开发)
+        - label: DevOps Agent (运维开发)
+        - label: QA Agent (质量保证)
+        - label: Security Agent (安全)
+        - label: 其他/通用
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 检查清单
+      description: 在提交前请确认以下事项
+      options:
+        - label: 我已经搜索了现有的issues，确认这不是重复问题
+          required: true
+        - label: 我已经尝试了最新版本
+          required: true
+        - label: 我已经阅读了相关文档
+          required: true

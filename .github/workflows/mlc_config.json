@@ -1,0 +1,28 @@
+{
+  "ignorePatterns": [
+    {
+      "pattern": "^https://your-"
+    },
+    {
+      "pattern": "^mailto:"
+    },
+    {
+      "pattern": "localhost"
+    }
+  ],
+  "replacementPatterns": [
+    {
+      "pattern": "^/",
+      "replacement": "{{BASEURL}}/"
+    }
+  ],
+  "httpStatusCodes": [
+    {
+      "pattern": "^https://github\\.com",
+      "ignore": [429]
+    }
+  ],
+  "timeout": "10s",
+  "retryCount": 3,
+  "retryDelay": "1s"
+}
