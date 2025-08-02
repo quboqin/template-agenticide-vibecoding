@@ -280,12 +280,12 @@ graph TD
     F --> G[集成测试]
     G --> H[部署发布]
     
-    B --> I[/prd-gen]
-    C --> J[/spec-create]
-    E --> K[/implement --spec-driven]
-    F --> L[/code-review]
-    G --> M[/test-run]
-    H --> N[/deploy-prep]
+    B --> I["/prd-gen"]
+    C --> J["/spec-create"]
+    E --> K["/implement --spec-driven"]
+    F --> L["/code-review"]
+    G --> M["/test-run"]
+    H --> N["/deploy-prep"]
 ```
 
 ### Test-Driven开发流程
@@ -299,12 +299,12 @@ graph TD
     E --> F[运行测试通过]
     F --> G[提交代码]
     
-    A --> H[/test-gen]
-    B --> I[/test-run]
-    C --> J[/implement --test-driven]
-    D --> K[/test-run]
-    E --> L[/refactor]
-    G --> M[/code-review]
+    A --> H["/test-gen"]
+    B --> I["/test-run"]
+    C --> J["/implement --test-driven"]
+    D --> K["/test-run"]
+    E --> L["/refactor"]
+    G --> M["/code-review"]
 ```
 
 ### 多Agent协作流程
