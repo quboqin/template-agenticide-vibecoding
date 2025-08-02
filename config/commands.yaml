@@ -1,0 +1,367 @@
+# 定制化Commands配置
+# 基于Spec-Driven和Test-Driven开发的Claude Code命令扩展
+
+commands:
+  # ================================
+  # 项目管理类Commands
+  # ================================
+  
+  /spec-create:
+    description: "创建技术规格文档"
+    usage: "/spec-create [domain] [type] [--template] [--detail]"
+    category: "project-management"
+    agent: "Architect Agent + Domain Expert"
+    flags:
+      - template: "使用预定义模板"
+      - detail: "生成详细规格文档"
+      - review: "包含评审检查点"
+    workflow:
+      - analyze_requirements
+      - select_template
+      - generate_specification
+      - validate_completeness
+      - create_review_checklist
+    output:
+      - specification_document
+      - technical_requirements
+      - acceptance_criteria
+      - review_checklist
+    examples:
+      - "/spec-create frontend component-library --template --detail"
+      - "/spec-create backend api-gateway --review"
+      - "/spec-create mobile react-native-app --template"
+
+  /prd-gen:
+    description: "生成产品需求文档"
+    usage: "/prd-gen [feature] [priority] [--stakeholders] [--metrics]"
+    category: "project-management"
+    agent: "PM Agent + Business Analyst"
+    flags:
+      - stakeholders: "包含利益相关者分析"
+      - metrics: "包含成功指标定义"
+      - timeline: "包含时间规划"
+    workflow:
+      - analyze_business_requirements
+      - identify_stakeholders
+      - define_success_metrics
+      - create_user_stories
+      - estimate_efforts
+    output:
+      - prd_document
+      - user_stories
+      - acceptance_criteria
+      - success_metrics
+    examples:
+      - "/prd-gen user-auth high --stakeholders --metrics"
+      - "/prd-gen payment-system critical --timeline"
+
+  /task-break:
+    description: "任务分解与估算"
+    usage: "/task-break [feature] [granularity] [--dependencies] [--risks]"
+    category: "project-management"
+    agent: "PM Agent + Architect Agent"
+    flags:
+      - dependencies: "分析任务依赖关系"
+      - risks: "识别风险和缓解措施"
+      - parallel: "识别可并行任务"
+    workflow:
+      - analyze_feature_scope
+      - decompose_into_tasks
+      - estimate_efforts
+      - identify_dependencies
+      - assess_risks
+    output:
+      - task_breakdown_structure
+      - effort_estimates
+      - dependency_graph
+      - risk_assessment
+    examples:
+      - "/task-break payment-system detailed --dependencies --risks"
+      - "/task-break user-dashboard moderate --parallel"
+
+  # ================================
+  # 开发类Commands
+  # ================================
+
+  /implement:
+    description: "实现功能或组件"
+    usage: "/implement [feature] [--type] [--framework] [--test-driven]"
+    category: "development"
+    agent: "Domain-specific Agent (Frontend/Backend/etc.)"
+    flags:
+      - type: "component|api|service|feature"
+      - framework: "指定技术框架"
+      - test-driven: "启用TDD开发模式"
+      - spec-driven: "基于规格文档开发"
+    workflow:
+      - analyze_requirements
+      - select_technology_stack
+      - design_implementation
+      - write_tests_first
+      - implement_functionality
+      - verify_against_spec
+    output:
+      - source_code
+      - test_files
+      - documentation
+      - implementation_report
+    examples:
+      - "/implement user-login --type component --framework react --test-driven"
+      - "/implement payment-api --type api --framework fastapi --spec-driven"
+
+  /code-review:
+    description: "代码审查与质量检查"
+    usage: "/code-review [scope] [--focus] [--automated] [--checklist]"
+    category: "quality-assurance"
+    agent: "Architect Agent + Security Agent + QA Agent"
+    flags:
+      - focus: "security|performance|maintainability|all"
+      - automated: "运行自动化检查工具"
+      - checklist: "生成审查清单"
+    workflow:
+      - scan_code_changes
+      - run_automated_checks
+      - analyze_architecture_impact
+      - check_security_vulnerabilities
+      - assess_performance_impact
+      - generate_review_report
+    output:
+      - review_report
+      - issue_list
+      - improvement_suggestions
+      - quality_score
+    examples:
+      - "/code-review src/auth --focus security --automated"
+      - "/code-review . --focus all --checklist"
+
+  # ================================
+  # 测试类Commands
+  # ================================
+
+  /test-gen:
+    description: "生成测试用例和脚本"
+    usage: "/test-gen [type] [coverage] [--framework] [--data]"
+    category: "testing"
+    agent: "QA Agent + Developer Agents"
+    flags:
+      - framework: "指定测试框架"
+      - data: "生成测试数据"
+      - parallel: "支持并行执行"
+    workflow:
+      - analyze_test_requirements
+      - design_test_scenarios
+      - generate_test_cases
+      - create_test_data
+      - implement_test_scripts
+    output:
+      - test_cases
+      - test_scripts
+      - test_data
+      - execution_plan
+    examples:
+      - "/test-gen e2e 90% --framework playwright --data"
+      - "/test-gen unit 80% --framework jest --parallel"
+
+  /test-run:
+    description: "执行测试套件"
+    usage: "/test-run [suite] [environment] [--parallel] [--report]"
+    category: "testing"
+    agent: "QA Agent"
+    flags:
+      - parallel: "并行执行测试"
+      - report: "生成详细报告"
+      - coverage: "包含覆盖率分析"
+    workflow:
+      - validate_test_environment
+      - execute_test_suite
+      - collect_results
+      - analyze_failures
+      - generate_report
+    output:
+      - test_results
+      - coverage_report
+      - failure_analysis
+      - recommendations
+    examples:
+      - "/test-run regression staging --parallel --report"
+      - "/test-run smoke production --coverage"
+
+  # ================================
+  # 部署类Commands
+  # ================================
+
+  /deploy-prep:
+    description: "部署准备与配置"
+    usage: "/deploy-prep [env] [strategy] [--validate] [--rollback]"
+    category: "deployment"
+    agent: "DevOps Agent + SRE Agent"
+    flags:
+      - validate: "执行部署前验证"
+      - rollback: "准备回滚方案"
+      - monitor: "配置部署监控"
+    workflow:
+      - analyze_deployment_requirements
+      - prepare_infrastructure
+      - configure_deployment_pipeline
+      - setup_monitoring
+      - create_rollback_plan
+    output:
+      - deployment_config
+      - infrastructure_code
+      - monitoring_setup
+      - rollback_plan
+    examples:
+      - "/deploy-prep production blue-green --validate --rollback"
+      - "/deploy-prep staging rolling --monitor"
+
+  /monitor-setup:
+    description: "监控系统配置"
+    usage: "/monitor-setup [service] [metrics] [--alerts] [--dashboard]"
+    category: "monitoring"
+    agent: "DevOps Agent + SRE Agent"
+    flags:
+      - alerts: "配置告警规则"
+      - dashboard: "创建监控仪表盘"
+      - sla: "设置SLA监控"
+    workflow:
+      - identify_key_metrics
+      - configure_data_collection
+      - setup_alerting_rules
+      - create_dashboards
+      - validate_monitoring
+    output:
+      - monitoring_config
+      - alert_rules
+      - dashboard_definitions
+      - sla_objectives
+    examples:
+      - "/monitor-setup payment-api performance --alerts --dashboard"
+      - "/monitor-setup user-service availability --sla"
+
+  # ================================
+  # 协作类Commands
+  # ================================
+
+  /progress-sync:
+    description: "项目进度同步"
+    usage: "/progress-sync [--daily] [--weekly] [--milestone]"
+    category: "collaboration"
+    agent: "PM Agent"
+    flags:
+      - daily: "日常进度同步"
+      - weekly: "周度进度汇报"
+      - milestone: "里程碑进度检查"
+    workflow:
+      - collect_progress_data
+      - analyze_velocity_trends
+      - identify_blockers
+      - assess_risks
+      - generate_status_report
+    output:
+      - progress_report
+      - velocity_analysis
+      - blocker_list
+      - risk_assessment
+    examples:
+      - "/progress-sync --daily"
+      - "/progress-sync --milestone"
+
+  /handoff:
+    description: "工作交接"
+    usage: "/handoff [from-agent] [to-agent] [context] [--checklist]"
+    category: "collaboration"
+    agent: "PM Agent"
+    flags:
+      - checklist: "生成交接清单"
+      - knowledge: "包含知识转移"
+      - validation: "包含交接验证"
+    workflow:
+      - analyze_handoff_context
+      - prepare_knowledge_transfer
+      - create_handoff_checklist
+      - validate_understanding
+      - confirm_handoff_completion
+    output:
+      - handoff_document
+      - knowledge_transfer_notes
+      - validation_checklist
+      - handoff_confirmation
+    examples:
+      - "/handoff frontend-agent backend-agent api-integration --checklist"
+      - "/handoff qa-agent devops-agent deployment-validation --knowledge"
+
+# ================================
+# Command Categories
+# ================================
+
+categories:
+  project-management:
+    description: "项目管理和规划相关命令"
+    agents: ["PM Agent", "Architect Agent", "Business Analyst"]
+    
+  development:
+    description: "开发和实现相关命令"
+    agents: ["Frontend Agent", "Backend Agent", "DevOps Agent"]
+    
+  quality-assurance:
+    description: "质量保证和测试相关命令"
+    agents: ["QA Agent", "Security Agent", "Performance Agent"]
+    
+  testing:
+    description: "测试设计和执行相关命令"
+    agents: ["QA Agent", "Frontend Agent", "Backend Agent"]
+    
+  deployment:
+    description: "部署和运维相关命令"
+    agents: ["DevOps Agent", "SRE Agent"]
+    
+  monitoring:
+    description: "监控和观测相关命令"
+    agents: ["DevOps Agent", "SRE Agent", "Performance Agent"]
+    
+  collaboration:
+    description: "协作和沟通相关命令"
+    agents: ["PM Agent", "All Agents"]
+
+# ================================
+# Global Flags
+# ================================
+
+global_flags:
+  --dry-run:
+    description: "预览模式，不执行实际操作"
+    applicable_to: "all_commands"
+    
+  --verbose:
+    description: "详细输出模式"
+    applicable_to: "all_commands"
+    
+  --output:
+    description: "指定输出格式 (json|yaml|markdown)"
+    applicable_to: "all_commands"
+    default: "markdown"
+    
+  --agent:
+    description: "指定执行Agent"
+    applicable_to: "all_commands"
+    
+  --priority:
+    description: "设置任务优先级 (low|medium|high|critical)"
+    applicable_to: "task_commands"
+    default: "medium"
+
+# ================================
+# Command Aliases
+# ================================
+
+aliases:
+  /spec: "/spec-create"
+  /prd: "/prd-gen"
+  /break: "/task-break"
+  /impl: "/implement"
+  /review: "/code-review"
+  /test: "/test-gen"
+  /run: "/test-run"
+  /deploy: "/deploy-prep"
+  /monitor: "/monitor-setup"
+  /sync: "/progress-sync"

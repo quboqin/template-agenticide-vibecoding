@@ -1,0 +1,434 @@
+# 项目任务管理系统配置
+# 支持跨会话状态管理、多Agent并行开发、进度跟踪
+
+task_management:
+  # ================================
+  # 任务状态定义
+  # ================================
+  
+  task_states:
+    backlog:
+      description: "需求池中的待规划任务"
+      color: "#6c757d"
+      icon: "📋"
+      transitions: ["planned", "cancelled"]
+      
+    planned:
+      description: "已规划，待执行的任务"
+      color: "#007bff"
+      icon: "📅"
+      transitions: ["in-progress", "blocked", "cancelled"]
+      
+    in-progress:
+      description: "正在执行中的任务"
+      color: "#fd7e14"
+      icon: "🔄"
+      transitions: ["review", "testing", "blocked", "cancelled"]
+      
+    review:
+      description: "代码审查中的任务"
+      color: "#6f42c1"
+      icon: "👁️"
+      transitions: ["in-progress", "testing", "done"]
+      
+    testing:
+      description: "测试验证中的任务"
+      color: "#e83e8c"
+      icon: "🧪"
+      transitions: ["in-progress", "review", "done", "blocked"]
+      
+    blocked:
+      description: "被阻塞的任务"
+      color: "#dc3545"
+      icon: "🚧"
+      transitions: ["planned", "in-progress", "cancelled"]
+      
+    done:
+      description: "已完成的任务"
+      color: "#28a745"
+      icon: "✅"
+      transitions: ["testing"]  # 只能退回到测试状态
+      
+    cancelled:
+      description: "已取消的任务"
+      color: "#6c757d"
+      icon: "❌"
+      transitions: []  # 终态，不可转换
+
+  # ================================
+  # 任务优先级定义
+  # ================================
+  
+  task_priorities:
+    P0:
+      name: "Critical"
+      description: "紧急关键，24小时内必须处理"
+      color: "#dc3545"
+      icon: "🚨"
+      sla: "24h"
+      escalation: "immediate"
+      
+    P1:
+      name: "High"
+      description: "高优先级，3天内完成"
+      color: "#fd7e14"
+      icon: "🔥"
+      sla: "72h"
+      escalation: "daily"
+      
+    P2:
+      name: "Medium"
+      description: "中等优先级，1周内完成"
+      color: "#ffc107"
+      icon: "⚡"
+      sla: "1w"
+      escalation: "weekly"
+      
+    P3:
+      name: "Low"
+      description: "低优先级，2周内完成"
+      color: "#28a745"
+      icon: "📌"
+      sla: "2w"
+      escalation: "bi-weekly"
+
+  # ================================
+  # 任务类型定义
+  # ================================
+  
+  task_types:
+    epic:
+      description: "大型功能史诗"
+      estimated_effort: "weeks"
+      breakdown_required: true
+      icon: "🏔️"
+      
+    story:
+      description: "用户故事"
+      estimated_effort: "days"
+      breakdown_optional: true
+      icon: "📖"
+      
+    task:
+      description: "开发任务"
+      estimated_effort: "hours-days"
+      breakdown_optional: false
+      icon: "⚙️"
+      
+    bug:
+      description: "缺陷修复"
+      estimated_effort: "hours-days"
+      breakdown_optional: false
+      icon: "🐛"
+      
+    spike:
+      description: "技术调研"
+      estimated_effort: "hours-days"
+      breakdown_optional: false
+      icon: "🔍"
+      
+    documentation:
+      description: "文档任务"
+      estimated_effort: "hours"
+      breakdown_optional: false
+      icon: "📝"
+
+  # ================================
+  # Agent角色和任务分配
+  # ================================
+  
+  agent_assignments:
+    "PM Agent":
+      primary_tasks:
+        - "epic"
+        - "story"
+        - "project-management"
+      secondary_tasks:
+        - "documentation"
+        - "spike"
+      max_concurrent: 5
+      
+    "Architect Agent":
+      primary_tasks:
+        - "architecture-design"
+        - "spike"
+        - "technical-review"
+      secondary_tasks:
+        - "documentation"
+        - "code-review"
+      max_concurrent: 3
+      
+    "Frontend Agent":
+      primary_tasks:
+        - "ui-development"
+        - "component-development"
+        - "frontend-testing"
+      secondary_tasks:
+        - "documentation"
+        - "integration-testing"
+      max_concurrent: 4
+      
+    "Backend Agent":
+      primary_tasks:
+        - "api-development"
+        - "service-development"
+        - "database-design"
+      secondary_tasks:
+        - "documentation"
+        - "integration-testing"
+      max_concurrent: 4
+      
+    "DevOps Agent":
+      primary_tasks:
+        - "infrastructure"
+        - "deployment"
+        - "monitoring"
+      secondary_tasks:
+        - "automation"
+        - "documentation"
+      max_concurrent: 3
+      
+    "QA Agent":
+      primary_tasks:
+        - "test-planning"
+        - "test-automation"
+        - "quality-assurance"
+      secondary_tasks:
+        - "documentation"
+        - "bug-verification"
+      max_concurrent: 6
+
+  # ================================
+  # 工作流配置
+  # ================================
+  
+  workflows:
+    feature_development:
+      name: "功能开发工作流"
+      stages:
+        - name: "需求分析"
+          required_roles: ["PM Agent"]
+          deliverables: ["PRD", "用户故事"]
+          
+        - name: "架构设计"
+          required_roles: ["Architect Agent"]
+          deliverables: ["技术规格", "API设计"]
+          depends_on: ["需求分析"]
+          
+        - name: "开发实现"
+          required_roles: ["Frontend Agent", "Backend Agent"]
+          deliverables: ["代码实现", "单元测试"]
+          depends_on: ["架构设计"]
+          parallel: true
+          
+        - name: "集成测试"
+          required_roles: ["QA Agent"]
+          deliverables: ["测试报告", "缺陷清单"]
+          depends_on: ["开发实现"]
+          
+        - name: "部署上线"
+          required_roles: ["DevOps Agent"]
+          deliverables: ["部署文档", "监控配置"]
+          depends_on: ["集成测试"]
+    
+    bug_fixing:
+      name: "缺陷修复工作流"
+      stages:
+        - name: "问题分析"
+          required_roles: ["QA Agent", "Developer Agent"]
+          deliverables: ["问题分析报告"]
+          
+        - name: "修复实现"
+          required_roles: ["Developer Agent"]
+          deliverables: ["修复代码", "回归测试"]
+          depends_on: ["问题分析"]
+          
+        - name: "验证发布"
+          required_roles: ["QA Agent", "DevOps Agent"]
+          deliverables: ["验证报告", "部署确认"]
+          depends_on: ["修复实现"]
+
+  # ================================
+  # 进度跟踪配置
+  # ================================
+  
+  progress_tracking:
+    # 自动更新触发器
+    auto_update_triggers:
+      - "git_commit"
+      - "pull_request_merge"
+      - "deployment_success"
+      - "test_completion"
+      - "code_review_approval"
+    
+    # 进度计算方法
+    progress_calculation:
+      epic:
+        method: "story_completion_ratio"
+        weight_by: "story_points"
+      story:
+        method: "task_completion_ratio"
+        weight_by: "effort_estimate"
+      task:
+        method: "checklist_completion"
+        
+    # 速度跟踪
+    velocity_tracking:
+      sprint_length: "2w"
+      velocity_window: "6_sprints"
+      burndown_chart: true
+      
+    # 质量指标
+    quality_metrics:
+      - "defect_density"
+      - "test_coverage"
+      - "code_review_coverage"
+      - "cycle_time"
+      - "lead_time"
+
+  # ================================
+  # 通知和报告
+  # ================================
+  
+  notifications:
+    # 任务状态变更通知
+    task_notifications:
+      status_change:
+        enabled: true
+        channels: ["slack", "email"]
+        recipients: ["assignee", "reporter", "watchers"]
+        
+      overdue_tasks:
+        enabled: true
+        check_interval: "daily"
+        escalation_levels: ["assignee", "team_lead", "manager"]
+        
+      blocked_tasks:
+        enabled: true
+        immediate: true
+        channels: ["slack", "email"]
+    
+    # 进度报告
+    progress_reports:
+      daily_standup:
+        enabled: true
+        time: "09:00"
+        format: "slack_message"
+        content:
+          - "completed_yesterday"
+          - "planned_today"
+          - "blockers"
+          
+      weekly_summary:
+        enabled: true
+        day: "friday"
+        time: "17:00"
+        format: "email_report"
+        content:
+          - "sprint_progress"
+          - "velocity_trend"
+          - "quality_metrics"
+          - "risk_assessment"
+          
+      milestone_reports:
+        enabled: true
+        trigger: "milestone_completion"
+        format: "comprehensive_report"
+        recipients: ["stakeholders", "team", "management"]
+
+  # ================================
+  # 集成配置
+  # ================================
+  
+  integrations:
+    # Git集成
+    git_integration:
+      enabled: true
+      branch_naming: "task-{task_id}-{task_title}"
+      commit_message_format: "[{task_id}] {commit_message}"
+      auto_link_commits: true
+      
+    # CI/CD集成
+    cicd_integration:
+      enabled: true
+      build_status_update: true
+      deployment_tracking: true
+      test_result_integration: true
+      
+    # 外部工具集成
+    external_tools:
+      jira:
+        enabled: false
+        sync_bidirectional: true
+        
+      github_issues:
+        enabled: true
+        auto_create_from_tasks: true
+        
+      slack:
+        enabled: true
+        channel: "#dev-team"
+        bot_token: "${SLACK_BOT_TOKEN}"
+
+# ================================
+# 进度文件配置
+# ================================
+
+progress_file:
+  # 文件位置和命名
+  file_settings:
+    filename: "PROJECT_PROGRESS.md"
+    location: "./docs/"
+    backup_enabled: true
+    backup_frequency: "daily"
+    
+  # 自动更新设置
+  auto_update:
+    enabled: true
+    update_frequency: "real_time"
+    conflict_resolution: "merge_with_timestamp"
+    
+  # 模板配置
+  template:
+    sections:
+      - "project_overview"
+      - "current_sprint"
+      - "task_breakdown"
+      - "progress_summary"
+      - "quality_metrics"
+      - "risks_and_blockers"
+      - "next_milestones"
+      
+    format:
+      date_format: "YYYY-MM-DD"
+      time_format: "HH:mm:ss"
+      timezone: "UTC+8"
+      
+  # 历史记录
+  history:
+    enabled: true
+    retention_period: "6_months"
+    snapshot_frequency: "weekly"
+    
+# ================================
+# 性能和存储配置
+# ================================
+
+performance:
+  # 缓存配置
+  cache:
+    task_cache_ttl: "1h"
+    progress_cache_ttl: "5m"
+    query_cache_size: "100MB"
+    
+  # 数据库配置
+  database:
+    connection_pool_size: 10
+    query_timeout: "30s"
+    batch_size: 100
+    
+  # 同步配置
+  synchronization:
+    max_concurrent_updates: 5
+    lock_timeout: "10s"
+    retry_attempts: 3

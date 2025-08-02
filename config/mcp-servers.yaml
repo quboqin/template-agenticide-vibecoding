@@ -1,0 +1,528 @@
+# MCP服务器集成配置
+# Model Context Protocol服务器配置和工具链集成
+
+mcp_servers:
+  # ================================
+  # Context7 (文档与最佳实践)
+  # ================================
+  
+  context7:
+    name: "Context7"
+    description: "官方库文档、代码示例、最佳实践、本地化标准"
+    version: "latest"
+    enabled: true
+    priority: "high"
+    
+    # 服务器配置
+    config:
+      endpoint: "context7://server"
+      timeout: 30
+      retry_attempts: 3
+      cache_ttl: 3600  # 1小时缓存
+      max_concurrent_requests: 5
+    
+    # 支持的工具
+    tools:
+      - "resolve-library-id"
+      - "get-library-docs" 
+      - "search-best-practices"
+      - "get-code-examples"
+      - "validate-patterns"
+    
+    # 使用场景
+    use_cases:
+      - "技术文档查询"
+      - "最佳实践参考"
+      - "代码模式验证"
+      - "框架使用指导"
+      - "API文档查询"
+      - "本地化标准参考"
+    
+    # 支持的Agent
+    supported_agents:
+      - "PM Agent"
+      - "Architect Agent"
+      - "Frontend Agent"
+      - "Backend Agent"
+      - "DevOps Agent"
+      - "QA Agent"
+      - "Security Agent"
+    
+    # 自动激活规则
+    auto_activation:
+      patterns:
+        - "external library imports"
+        - "framework questions"
+        - "documentation requests"
+        - "best practices"
+        - "code patterns"
+      keywords:
+        - "documentation"
+        - "example"
+        - "best practice"
+        - "pattern"
+        - "how to"
+        - "tutorial"
+      file_types:
+        - "package.json"
+        - "requirements.txt"
+        - "go.mod"
+        - "Cargo.toml"
+    
+    # 工作流集成
+    workflow_integration:
+      commands:
+        - "/spec-create"
+        - "/implement"
+        - "/code-review"
+        - "/test-gen"
+        - "/deploy-prep"
+      
+      hooks:
+        - "on_library_import"
+        - "on_framework_question"
+        - "on_documentation_request"
+
+  # ================================
+  # Sequential (复杂分析与推理)
+  # ================================
+  
+  sequential:
+    name: "Sequential"
+    description: "多步骤问题解决、架构分析、系统调试"
+    version: "latest"
+    enabled: true
+    priority: "high"
+    
+    # 服务器配置
+    config:
+      endpoint: "sequential://server"
+      timeout: 60
+      retry_attempts: 2
+      cache_ttl: 1800  # 30分钟缓存
+      max_concurrent_requests: 3
+      analysis_depth: "deep"
+    
+    # 支持的工具
+    tools:
+      - "multi-step-analysis"
+      - "problem-decomposition"
+      - "systematic-debugging"
+      - "architectural-reasoning"
+      - "dependency-analysis"
+      - "risk-assessment"
+    
+    # 使用场景
+    use_cases:
+      - "复杂问题分析"
+      - "系统架构设计"
+      - "调试和故障排除"
+      - "风险评估"
+      - "依赖关系分析"
+      - "多步骤推理"
+    
+    # 支持的Agent
+    supported_agents:
+      - "PM Agent"
+      - "Architect Agent"
+      - "Backend Agent"
+      - "DevOps Agent"
+      - "QA Agent"
+      - "Security Agent"
+    
+    # 自动激活规则
+    auto_activation:
+      patterns:
+        - "complex debugging scenarios"
+        - "system design questions"
+        - "multi-step analysis"
+        - "architectural decisions"
+      keywords:
+        - "analyze"
+        - "debug"
+        - "troubleshoot"
+        - "architecture"
+        - "systematic"
+        - "complex"
+      complexity_threshold: 0.7
+    
+    # 工作流集成
+    workflow_integration:
+      commands:
+        - "/task-break"
+        - "/code-review"
+        - "/analyze"
+        - "/troubleshoot"
+        - "/design"
+      
+      hooks:
+        - "on_complex_analysis"
+        - "on_debugging_request"
+        - "on_architectural_decision"
+
+  # ================================
+  # Magic (UI组件生成)
+  # ================================
+  
+  magic:
+    name: "Magic"
+    description: "现代UI组件生成、设计系统集成"
+    version: "latest"
+    enabled: true
+    priority: "medium"
+    
+    # 服务器配置
+    config:
+      endpoint: "magic://server"
+      timeout: 45
+      retry_attempts: 3
+      cache_ttl: 2400  # 40分钟缓存
+      max_concurrent_requests: 4
+    
+    # 支持的工具
+    tools:
+      - "generate-component"
+      - "design-system-integration"
+      - "responsive-layout"
+      - "accessibility-compliance"
+      - "theme-generation"
+      - "component-library"
+    
+    # 使用场景
+    use_cases:
+      - "UI组件生成"
+      - "设计系统集成"
+      - "响应式设计"
+      - "可访问性实现"
+      - "主题定制"
+      - "组件库构建"
+    
+    # 支持的Agent
+    supported_agents:
+      - "Frontend Agent"
+      - "Designer Agent"
+      - "Architect Agent"
+    
+    # 自动激活规则
+    auto_activation:
+      patterns:
+        - "UI component requests"
+        - "design system queries"
+        - "frontend development"
+      keywords:
+        - "component"
+        - "UI"
+        - "interface"
+        - "design"
+        - "theme"
+        - "responsive"
+      file_types:
+        - "*.jsx"
+        - "*.tsx"
+        - "*.vue"
+        - "*.css"
+        - "*.scss"
+    
+    # 工作流集成
+    workflow_integration:
+      commands:
+        - "/ui-create"
+        - "/component-gen"
+        - "/implement"
+        - "/test-gen"
+      
+      hooks:
+        - "on_ui_task"
+        - "on_component_request"
+        - "on_design_system_update"
+
+  # ================================
+  # Playwright (浏览器自动化)
+  # ================================
+  
+  playwright:
+    name: "Playwright"
+    description: "跨浏览器E2E测试、性能监控、UI自动化"
+    version: "latest"
+    enabled: true
+    priority: "medium"
+    
+    # 服务器配置
+    config:
+      endpoint: "playwright://server"
+      timeout: 120
+      retry_attempts: 2
+      cache_ttl: 600  # 10分钟缓存
+      max_concurrent_requests: 2
+    
+    # 支持的工具
+    tools:
+      - "browser-automation"
+      - "e2e-testing"
+      - "performance-monitoring"
+      - "visual-testing"
+      - "cross-browser-testing"
+      - "mobile-testing"
+    
+    # 浏览器配置
+    browsers:
+      chromium:
+        enabled: true
+        headless: true
+        viewport: { width: 1280, height: 720 }
+      firefox:
+        enabled: true
+        headless: true
+        viewport: { width: 1280, height: 720 }
+      webkit:
+        enabled: true
+        headless: true
+        viewport: { width: 1280, height: 720 }
+    
+    # 使用场景
+    use_cases:
+      - "E2E测试自动化"
+      - "性能监控"
+      - "视觉回归测试"
+      - "跨浏览器测试"
+      - "用户交互测试"
+      - "移动端测试"
+    
+    # 支持的Agent
+    supported_agents:
+      - "QA Agent"
+      - "Frontend Agent"
+      - "Performance Agent"
+    
+    # 自动激活规则
+    auto_activation:
+      patterns:
+        - "testing workflows"
+        - "performance monitoring"
+        - "e2e test generation"
+        - "browser automation"
+      keywords:
+        - "test"
+        - "e2e"
+        - "automation"
+        - "browser"
+        - "performance"
+        - "visual"
+    
+    # 工作流集成
+    workflow_integration:
+      commands:
+        - "/test-gen"
+        - "/test-run"
+        - "/monitor-setup"
+        - "/optimize-fe"
+      
+      hooks:
+        - "on_test_phase"
+        - "on_performance_check"
+        - "on_deployment_validation"
+
+# ================================
+# MCP服务器路由配置
+# ================================
+
+server_routing:
+  # 任务类型到服务器映射
+  task_mapping:
+    documentation:
+      primary: "context7"
+      fallback: ["sequential"]
+      
+    analysis:
+      primary: "sequential"
+      secondary: "context7"
+      
+    ui_development:
+      primary: "magic"
+      secondary: "context7"
+      
+    testing:
+      primary: "playwright"
+      secondary: "sequential"
+      
+    debugging:
+      primary: "sequential"
+      secondary: "context7"
+      
+    performance:
+      primary: "playwright"
+      secondary: "sequential"
+
+  # Agent到服务器偏好映射
+  agent_preferences:
+    "PM Agent":
+      primary: ["sequential", "context7"]
+      avoid: ["magic"]
+      
+    "Architect Agent":
+      primary: ["sequential", "context7"]
+      secondary: ["magic"]
+      
+    "Frontend Agent":
+      primary: ["magic", "context7"]
+      secondary: ["playwright"]
+      
+    "Backend Agent":
+      primary: ["context7", "sequential"]
+      avoid: ["magic"]
+      
+    "DevOps Agent":
+      primary: ["context7", "sequential"]
+      avoid: ["magic"]
+      
+    "QA Agent":
+      primary: ["playwright", "sequential"]
+      secondary: ["context7"]
+
+  # 负载均衡策略
+  load_balancing:
+    strategy: "round_robin"  # round_robin, least_connections, weighted
+    health_check_interval: 30
+    failure_threshold: 3
+    recovery_timeout: 300
+
+# ================================
+# 服务器集成配置
+# ================================
+
+integration:
+  # 多服务器协调
+  coordination:
+    enable_multi_server: true
+    max_concurrent_servers: 3
+    coordination_timeout: 180
+    
+    # 服务器间依赖关系
+    dependencies:
+      magic:
+        requires: ["context7"]  # Magic需要Context7提供框架文档
+      playwright:
+        optional: ["sequential"]  # Playwright可选配合Sequential分析
+  
+  # 缓存策略
+  caching:
+    enable_cross_server_cache: true
+    cache_levels:
+      - "server_local"     # 服务器本地缓存
+      - "shared_memory"    # 共享内存缓存
+      - "persistent_disk"  # 持久化磁盘缓存
+    
+    cache_policies:
+      context7:
+        strategy: "LRU"
+        max_size: "1GB"
+        ttl: 3600
+      sequential:
+        strategy: "LFU"
+        max_size: "512MB"
+        ttl: 1800
+      magic:
+        strategy: "FIFO"
+        max_size: "256MB"
+        ttl: 2400
+      playwright:
+        strategy: "TTL"
+        max_size: "128MB"
+        ttl: 600
+
+  # 错误处理和回退
+  error_handling:
+    retry_strategy:
+      max_retries: 3
+      backoff_factor: 2
+      max_backoff: 60
+    
+    fallback_chains:
+      context7: ["sequential", "local_docs"]
+      sequential: ["context7", "local_analysis"]
+      magic: ["context7", "manual_generation"]
+      playwright: ["sequential", "manual_testing"]
+    
+    circuit_breaker:
+      enabled: true
+      failure_threshold: 5
+      recovery_timeout: 300
+      half_open_max_calls: 3
+
+# ================================
+# 监控和诊断
+# ================================
+
+monitoring:
+  # 性能监控
+  performance:
+    enable_metrics: true
+    metrics_interval: 60
+    
+    tracked_metrics:
+      - "request_count"
+      - "response_time"
+      - "error_rate"
+      - "cache_hit_ratio"
+      - "concurrent_requests"
+    
+    alerts:
+      high_latency:
+        threshold: "5s"
+        action: "notify_team"
+      high_error_rate:
+        threshold: "10%"
+        action: "enable_fallback"
+      server_unavailable:
+        threshold: "3_consecutive_failures"
+        action: "circuit_breaker_open"
+
+  # 日志配置
+  logging:
+    level: "info"
+    format: "json"
+    
+    log_categories:
+      - "server_requests"
+      - "cache_operations"
+      - "error_events"
+      - "performance_metrics"
+    
+    retention_policy:
+      daily_logs: "7_days"
+      weekly_summaries: "4_weeks"
+      monthly_reports: "12_months"
+
+# ================================
+# 开发和测试配置
+# ================================
+
+development:
+  # 本地开发配置
+  local_development:
+    mock_servers: true
+    debug_mode: true
+    verbose_logging: true
+    
+    # 本地Mock服务器
+    mock_endpoints:
+      context7: "http://localhost:8001"
+      sequential: "http://localhost:8002"
+      magic: "http://localhost:8003"
+      playwright: "http://localhost:8004"
+
+  # 测试配置
+  testing:
+    unit_tests:
+      mock_all_servers: true
+      test_timeout: 30
+      
+    integration_tests:
+      use_real_servers: false
+      test_environment: "staging"
+      cleanup_after_tests: true
+    
+    performance_tests:
+      load_test_duration: "5m"
+      max_concurrent_users: 100
+      response_time_threshold: "2s"

@@ -1,0 +1,464 @@
+# Hooks配置文件
+# 定义项目生命周期中的自动化触发点和响应动作
+
+hooks:
+  # ================================
+  # Git Hooks (代码版本控制)
+  # ================================
+  
+  git_hooks:
+    pre-commit:
+      description: "代码提交前检查"
+      trigger: "git commit执行前"
+      agents: ["QA Agent", "Security Agent", "Architect Agent"]
+      actions:
+        - name: "code_quality_check"
+          command: "/code-review staged --focus all --automated"
+          timeout: 300
+          failure_action: "block_commit"
+          
+        - name: "security_scan"
+          command: "/security-scan --quick --staged"
+          timeout: 180
+          failure_action: "warn_and_continue"
+          
+        - name: "test_run"
+          command: "/test-run unit affected --parallel"
+          timeout: 600
+          failure_action: "block_commit"
+          
+        - name: "spec_validation"
+          command: "/validate-spec --against-code"
+          timeout: 120
+          failure_action: "warn_and_continue"
+      
+      conditions:
+        - "有代码文件变更"
+        - "不在hotfix分支"
+      
+      notifications:
+        success: "提交前检查通过 ✅"
+        failure: "提交前检查失败，请修复后重试 ❌"
+
+    pre-push:
+      description: "代码推送前检查"
+      trigger: "git push执行前"
+      agents: ["DevOps Agent", "QA Agent"]
+      actions:
+        - name: "integration_test"
+          command: "/test-run integration current-branch --coverage"
+          timeout: 1200
+          failure_action: "block_push"
+          
+        - name: "build_verification"
+          command: "/build --verify --target staging"
+          timeout: 900
+          failure_action: "block_push"
+          
+        - name: "dependency_check"
+          command: "/security-scan --dependencies --critical-only"
+          timeout: 300
+          failure_action: "block_push"
+      
+      conditions:
+        - "推送到主要分支(main/develop)"
+        - "包含新的功能代码"
+      
+      notifications:
+        success: "推送前检查通过，可以推送 🚀"
+        failure: "推送前检查失败，推送被阻止 🚫"
+
+    post-merge:
+      description: "代码合并后处理"
+      trigger: "Pull Request合并后"
+      agents: ["DevOps Agent", "PM Agent"]
+      actions:
+        - name: "deploy_to_dev"
+          command: "/deploy-prep development auto --validate"
+          timeout: 1800
+          failure_action: "notify_team"
+          
+        - name: "update_progress"
+          command: "/progress-sync --auto-update"
+          timeout: 60
+          failure_action: "log_only"
+          
+        - name: "notify_stakeholders"
+          command: "/notify --type merge-completed --stakeholders auto"
+          timeout: 30
+          failure_action: "log_only"
+      
+      async: true
+      notifications:
+        success: "合并后处理完成 ✅"
+        failure: "合并后处理失败，请检查 ⚠️"
+
+  # ================================
+  # Project Lifecycle Hooks (项目生命周期)
+  # ================================
+  
+  project_hooks:
+    on_milestone_reach:
+      description: "里程碑达成检查"
+      trigger: "里程碑达成时"
+      agents: ["PM Agent", "QA Agent", "Architect Agent"]
+      actions:
+        - name: "quality_gate_check"
+          command: "/quality-report milestone current --comprehensive"
+          timeout: 300
+          failure_action: "escalate"
+          
+        - name: "progress_report"
+          command: "/progress-sync --milestone --detailed"
+          timeout: 180
+          failure_action: "manual_fallback"
+          
+        - name: "risk_assessment"
+          command: "/analyze --scope project --focus risks"
+          timeout: 240
+          failure_action: "manual_fallback"
+          
+        - name: "stakeholder_notification"
+          command: "/notify --type milestone --all-stakeholders"
+          timeout: 60
+          failure_action: "retry_later"
+      
+      conditions:
+        - "里程碑任务完成度 >= 95%"
+        - "质量指标达标"
+      
+      notifications:
+        success: "🎉 里程碑达成！质量检查通过"
+        failure: "⚠️ 里程碑检查发现问题，需要关注"
+
+    on_deadline_approach:
+      description: "截止日期临近处理"
+      trigger: "距离截止日期48小时内"
+      agents: ["PM Agent", "Architect Agent"]
+      actions:
+        - name: "risk_assessment"
+          command: "/analyze --scope remaining-tasks --focus time-risk"
+          timeout: 300
+          failure_action: "manual_fallback"
+          
+        - name: "resource_rebalance"
+          command: "/task-break remaining --focus critical-path"
+          timeout: 240
+          failure_action: "manual_fallback"
+          
+        - name: "scope_adjustment"
+          command: "/prd-gen --scope-review --priority-rebalance"
+          timeout: 180
+          failure_action: "escalate"
+          
+        - name: "team_notification"
+          command: "/notify --type deadline-warning --all-team"
+          timeout: 30
+          failure_action: "retry_later"
+      
+      frequency: "daily"
+      notifications:
+        success: "截止日期风险评估完成"
+        failure: "截止日期风险评估失败，需要人工介入"
+
+    on_bug_critical:
+      description: "严重缺陷响应"
+      trigger: "发现Critical级别缺陷"
+      agents: ["PM Agent", "QA Agent", "Senior Engineer Agent"]
+      actions:
+        - name: "emergency_response"
+          command: "/analyze --scope bug-impact --urgent"
+          timeout: 300
+          failure_action: "escalate_immediately"
+          
+        - name: "hotfix_plan"
+          command: "/task-break hotfix --emergency --timeline"
+          timeout: 240
+          failure_action: "manual_fallback"
+          
+        - name: "team_mobilization"
+          command: "/notify --type emergency --priority critical"
+          timeout: 30
+          failure_action: "manual_fallback"
+          
+        - name: "stakeholder_alert"
+          command: "/notify --type critical-bug --stakeholders emergency"
+          timeout: 60
+          failure_action: "escalate"
+      
+      immediate: true
+      notifications:
+        success: "🚨 严重缺陷响应流程启动"
+        failure: "❌ 严重缺陷响应失败，立即人工介入"
+
+  # ================================
+  # Development Hooks (开发流程)
+  # ================================
+  
+  development_hooks:
+    on_feature_start:
+      description: "功能开发开始"
+      trigger: "创建feature分支时"
+      agents: ["PM Agent", "Architect Agent"]
+      actions:
+        - name: "spec_validation"
+          command: "/spec-create feature --validate-requirements"
+          timeout: 300
+          failure_action: "warn_and_continue"
+          
+        - name: "task_breakdown"
+          command: "/task-break feature --detailed --estimates"
+          timeout: 240
+          failure_action: "manual_fallback"
+          
+        - name: "test_planning"
+          command: "/test-gen plan feature --coverage-target 80%"
+          timeout: 180
+          failure_action: "warn_and_continue"
+      
+      conditions:
+        - "分支名包含'feature/'"
+        - "有关联的需求文档"
+      
+      notifications:
+        success: "功能开发准备就绪 🚀"
+        failure: "功能开发准备检查失败 ⚠️"
+
+    on_code_change:
+      description: "代码变更检查"
+      trigger: "代码文件变更时"
+      agents: ["Architect Agent", "Security Agent"]
+      actions:
+        - name: "architecture_impact"
+          command: "/code-review diff --focus architecture"
+          timeout: 120
+          failure_action: "warn_and_continue"
+          
+        - name: "security_quick_scan"
+          command: "/security-scan --quick --diff"
+          timeout: 90
+          failure_action: "warn_and_continue"
+          
+        - name: "performance_impact"
+          command: "/analyze --scope performance-impact --quick"
+          timeout: 60
+          failure_action: "log_only"
+      
+      debounce: 30  # 30秒内的多次变更合并处理
+      conditions:
+        - "变更行数 > 10"
+        - "涉及核心模块"
+
+    on_test_failure:
+      description: "测试失败处理"
+      trigger: "自动化测试失败时"
+      agents: ["QA Agent", "Developer Agent"]
+      actions:
+        - name: "failure_analysis"
+          command: "/analyze --scope test-failure --detailed"
+          timeout: 300
+          failure_action: "manual_fallback"
+          
+        - name: "impact_assessment"
+          command: "/test-run --analyze-impact failed-tests"
+          timeout: 180
+          failure_action: "manual_fallback"
+          
+        - name: "auto_retry"
+          command: "/test-run failed-tests --retry-flaky"
+          timeout: 600
+          failure_action: "escalate"
+      
+      retry_limit: 2
+      notifications:
+        success: "测试失败分析完成"
+        failure: "测试失败分析失败，需要人工介入"
+
+  # ================================
+  # Deployment Hooks (部署流程)
+  # ================================
+  
+  deployment_hooks:
+    on_deploy_start:
+      description: "部署开始检查"
+      trigger: "部署流程启动时"
+      agents: ["DevOps Agent", "QA Agent"]
+      actions:
+        - name: "pre_deploy_validation"
+          command: "/deploy-prep --validate --comprehensive"
+          timeout: 600
+          failure_action: "block_deployment"
+          
+        - name: "health_check_baseline"
+          command: "/monitor-setup --baseline --pre-deploy"
+          timeout: 180
+          failure_action: "warn_and_continue"
+          
+        - name: "rollback_preparation"
+          command: "/deploy-prep --rollback-plan --verify"
+          timeout: 300
+          failure_action: "block_deployment"
+      
+      conditions:
+        - "目标环境为staging或production"
+        - "通过所有质量门禁"
+      
+      notifications:
+        success: "部署前检查通过，开始部署 🚀"
+        failure: "部署前检查失败，部署被阻止 🚫"
+
+    on_deploy_success:
+      description: "部署成功后验证"
+      trigger: "部署成功完成时"
+      agents: ["DevOps Agent", "QA Agent"]
+      actions:
+        - name: "health_verification"
+          command: "/test-run smoke production --critical-only"
+          timeout: 900
+          failure_action: "trigger_rollback"
+          
+        - name: "performance_baseline"
+          command: "/monitor-setup --post-deploy --compare-baseline"
+          timeout: 300
+          failure_action: "alert_team"
+          
+        - name: "notification"
+          command: "/notify --type deploy-success --environment production"
+          timeout: 60
+          failure_action: "log_only"
+      
+      delay: 300  # 等待5分钟让系统稳定
+      notifications:
+        success: "✅ 部署成功且验证通过"
+        failure: "⚠️ 部署成功但验证失败"
+
+    on_deploy_failure:
+      description: "部署失败处理"
+      trigger: "部署失败时"
+      agents: ["DevOps Agent", "PM Agent"]
+      actions:
+        - name: "auto_rollback"
+          command: "/deploy --rollback --immediate"
+          timeout: 600
+          failure_action: "manual_intervention"
+          
+        - name: "incident_creation"
+          command: "/incident --create --severity high --type deployment"
+          timeout: 120
+          failure_action: "manual_fallback"
+          
+        - name: "team_notification"
+          command: "/notify --type deploy-failure --priority urgent"
+          timeout: 30
+          failure_action: "escalate"
+      
+      immediate: true
+      notifications:
+        success: "部署失败处理流程完成"
+        failure: "部署失败处理失败，需要立即人工介入"
+
+  # ================================
+  # Monitoring Hooks (监控告警)
+  # ================================
+  
+  monitoring_hooks:
+    on_performance_degradation:
+      description: "性能下降响应"
+      trigger: "性能指标下降超过阈值"
+      agents: ["Performance Agent", "DevOps Agent"]
+      actions:
+        - name: "performance_analysis"
+          command: "/analyze --scope performance --urgent"
+          timeout: 300
+          failure_action: "escalate"
+          
+        - name: "auto_scaling_check"
+          command: "/deploy --check-scaling --auto-adjust"
+          timeout: 180
+          failure_action: "manual_fallback"
+          
+        - name: "alert_team"
+          command: "/notify --type performance-issue --priority high"
+          timeout: 30
+          failure_action: "retry_later"
+      
+      cooldown: 900  # 15分钟冷却期
+      thresholds:
+        response_time: ">500ms"
+        error_rate: ">1%"
+        cpu_usage: ">80%"
+
+    on_security_alert:
+      description: "安全告警响应"
+      trigger: "检测到安全威胁"
+      agents: ["Security Agent", "DevOps Agent"]
+      actions:
+        - name: "threat_analysis"
+          command: "/security-scan --comprehensive --urgent"
+          timeout: 600
+          failure_action: "escalate_immediately"
+          
+        - name: "incident_response"
+          command: "/incident --create --severity critical --type security"
+          timeout: 120
+          failure_action: "manual_intervention"
+          
+        - name: "emergency_notification"
+          command: "/notify --type security-threat --priority critical"
+          timeout: 30
+          failure_action: "escalate"
+      
+      immediate: true
+      notifications:
+        success: "🔒 安全威胁响应流程启动"
+        failure: "❌ 安全威胁响应失败，立即升级处理"
+
+# ================================
+# Hook Configuration
+# ================================
+
+hook_config:
+  # 全局设置
+  global:
+    timeout_default: 300  # 默认超时时间(秒)
+    retry_attempts: 3     # 默认重试次数
+    parallel_execution: true  # 支持并行执行
+    log_level: "info"     # 日志级别
+    
+  # 通知配置
+  notifications:
+    channels:
+      slack: "#dev-team"
+      email: "team@company.com"
+      webhook: "https://hooks.company.com/webhook"
+    
+    templates:
+      success: "✅ {hook_name} 执行成功"
+      failure: "❌ {hook_name} 执行失败: {error}"
+      warning: "⚠️ {hook_name} 执行完成但有警告"
+  
+  # 错误处理
+  error_handling:
+    escalation_levels:
+      - "team_lead"
+      - "project_manager"
+      - "technical_director"
+    
+    failure_actions:
+      block_commit: "阻止代码提交"
+      block_push: "阻止代码推送"
+      block_deployment: "阻止部署"
+      trigger_rollback: "触发自动回滚"
+      escalate: "升级到上级处理"
+      manual_intervention: "需要人工干预"
+      retry_later: "稍后重试"
+      log_only: "仅记录日志"
+  
+  # 执行环境
+  execution:
+    max_concurrent_hooks: 10
+    hook_isolation: true
+    resource_limits:
+      cpu: "2 cores"
+      memory: "4GB"
+      timeout: "30 minutes"

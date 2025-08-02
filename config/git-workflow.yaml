@@ -1,0 +1,517 @@
+# Git工作流配置
+# 支持多Agent并行开发和协作
+
+git_workflow:
+  # ================================
+  # 分支策略配置
+  # ================================
+  
+  branching_strategy:
+    # 主分支配置
+    main_branches:
+      main:
+        description: "生产发布分支"
+        protected: true
+        merge_restrictions:
+          - "require_pull_request"
+          - "require_code_review"
+          - "require_status_checks"
+        auto_deploy: "production"
+        
+      develop:
+        description: "集成开发分支"
+        protected: true
+        merge_restrictions:
+          - "require_pull_request"
+          - "require_status_checks"
+        auto_deploy: "staging"
+    
+    # 功能分支命名规范
+    feature_branches:
+      naming_pattern: "feature/{agent}/{task-name}"
+      base_branch: "develop"
+      merge_target: "develop"
+      auto_delete_after_merge: true
+      
+      examples:
+        - "feature/frontend/user-login-ui"
+        - "feature/backend/payment-api"
+        - "feature/devops/ci-pipeline"
+        - "feature/qa/e2e-testing"
+    
+    # 热修复分支
+    hotfix_branches:
+      naming_pattern: "hotfix/{issue-id}-{description}"
+      base_branch: "main"
+      merge_targets: ["main", "develop"]
+      urgent_deployment: true
+      
+    # 发布分支
+    release_branches:
+      naming_pattern: "release/{version}"
+      base_branch: "develop"
+      merge_targets: ["main", "develop"]
+      version_tagging: true
+
+  # ================================
+  # Agent工作空间配置
+  # ================================
+  
+  agent_workspaces:
+    workspace_root: "./workspace"
+    
+    # Agent特定配置
+    agents:
+      pm:
+        name: "PM Agent"
+        workspace_path: "workspace/pm"
+        concurrent_tasks: 5
+        preferred_files:
+          - "docs/*.md"
+          - "*.md"
+          - "requirements/"
+        git_config:
+          user.name: "PM Agent"
+          user.email: "pm@ai-development.local"
+          
+      architect:
+        name: "Architect Agent"
+        workspace_path: "workspace/architect"
+        concurrent_tasks: 3
+        preferred_files:
+          - "docs/architecture/"
+          - "*.md"
+          - "diagrams/"
+          - "specs/"
+        git_config:
+          user.name: "Architect Agent"
+          user.email: "architect@ai-development.local"
+          
+      frontend:
+        name: "Frontend Agent"
+        workspace_path: "workspace/frontend"
+        concurrent_tasks: 4
+        preferred_files:
+          - "src/components/"
+          - "src/pages/"
+          - "src/styles/"
+          - "public/"
+          - "*.html"
+          - "*.css"
+          - "*.js"
+          - "*.ts"
+          - "*.jsx"
+          - "*.tsx"
+          - "*.vue"
+        git_config:
+          user.name: "Frontend Agent"
+          user.email: "frontend@ai-development.local"
+          
+      backend:
+        name: "Backend Agent"
+        workspace_path: "workspace/backend"
+        concurrent_tasks: 4
+        preferred_files:
+          - "src/api/"
+          - "src/services/"
+          - "src/models/"
+          - "src/controllers/"
+          - "*.py"
+          - "*.js"
+          - "*.ts"
+          - "*.go"
+          - "*.java"
+          - "*.sql"
+        git_config:
+          user.name: "Backend Agent"
+          user.email: "backend@ai-development.local"
+          
+      devops:
+        name: "DevOps Agent"
+        workspace_path: "workspace/devops"
+        concurrent_tasks: 3
+        preferred_files:
+          - "docker/"
+          - "k8s/"
+          - "terraform/"
+          - "ansible/"
+          - ".github/workflows/"
+          - "Dockerfile"
+          - "docker-compose*.yml"
+          - "*.tf"
+          - "*.yml"
+          - "*.yaml"
+        git_config:
+          user.name: "DevOps Agent"
+          user.email: "devops@ai-development.local"
+          
+      qa:
+        name: "QA Agent"
+        workspace_path: "workspace/qa"
+        concurrent_tasks: 6
+        preferred_files:
+          - "tests/"
+          - "e2e/"
+          - "*.test.js"
+          - "*.test.ts"
+          - "*.spec.js"
+          - "*.spec.ts"
+          - "playwright.config.*"
+          - "jest.config.*"
+        git_config:
+          user.name: "QA Agent"
+          user.email: "qa@ai-development.local"
+          
+      security:
+        name: "Security Agent"
+        workspace_path: "workspace/security"
+        concurrent_tasks: 2
+        preferred_files:
+          - "security/"
+          - "*.security"
+          - ".github/workflows/*security*"
+          - "Dockerfile"
+          - "docker-compose*.yml"
+        git_config:
+          user.name: "Security Agent"
+          user.email: "security@ai-development.local"
+
+  # ================================
+  # 协作工作流
+  # ================================
+  
+  collaboration_workflows:
+    # 并行开发工作流
+    parallel_development:
+      enabled: true
+      conflict_resolution: "automatic_merge"
+      integration_frequency: "daily"
+      
+      # 集成策略
+      integration_strategy:
+        method: "feature_integration"
+        schedule: "daily_at_18:00"
+        auto_merge_conditions:
+          - "all_tests_pass"
+          - "no_conflicts"
+          - "code_review_approved"
+          
+    # 跨Agent协作
+    cross_agent_collaboration:
+      enabled: true
+      
+      # 协作模式
+      collaboration_patterns:
+        frontend_backend:
+          description: "前后端协作开发"
+          agents: ["frontend", "backend"]
+          shared_files:
+            - "api/schemas/"
+            - "types/"
+            - "interfaces/"
+          coordination_branch: "integration/frontend-backend"
+          
+        devops_deployment:
+          description: "部署相关协作"
+          agents: ["devops", "backend", "frontend"]
+          shared_files:
+            - "docker/"
+            - "k8s/"
+            - "package.json"
+            - "requirements.txt"
+          coordination_branch: "integration/deployment"
+          
+        qa_testing:
+          description: "测试协作"
+          agents: ["qa", "frontend", "backend"]
+          shared_files:
+            - "tests/"
+            - "e2e/"
+            - "fixtures/"
+          coordination_branch: "integration/testing"
+
+  # ================================
+  # Git Hooks集成
+  # ================================
+  
+  git_hooks:
+    # 提交前检查
+    pre_commit:
+      enabled: true
+      checks:
+        - name: "format_check"
+          command: "npm run format:check"
+          applicable_files: ["*.js", "*.ts", "*.jsx", "*.tsx"]
+          
+        - name: "lint_check"
+          command: "npm run lint"
+          applicable_files: ["*.js", "*.ts", "*.jsx", "*.tsx"]
+          
+        - name: "type_check"
+          command: "npm run type-check"
+          applicable_files: ["*.ts", "*.tsx"]
+          
+        - name: "security_scan"
+          command: "npm audit --audit-level moderate"
+          applicable_files: ["package.json", "package-lock.json"]
+    
+    # 推送前检查
+    pre_push:
+      enabled: true
+      checks:
+        - name: "unit_tests"
+          command: "npm test"
+          timeout: 300
+          
+        - name: "build_check"
+          command: "npm run build"
+          timeout: 600
+          
+        - name: "integration_tests"
+          command: "npm run test:integration"
+          timeout: 900
+          condition: "feature_branch"
+    
+    # 合并后处理
+    post_merge:
+      enabled: true
+      actions:
+        - name: "install_dependencies"
+          command: "npm ci"
+          condition: "package_lock_changed"
+          
+        - name: "database_migration"
+          command: "npm run db:migrate"
+          condition: "migration_files_changed"
+          
+        - name: "update_progress"
+          command: "./scripts/update-progress.sh"
+          
+        - name: "notify_team"
+          command: "./scripts/notify-merge.sh"
+
+  # ================================
+  # 合并策略配置
+  # ================================
+  
+  merge_strategies:
+    # 默认合并策略
+    default_strategy: "merge_commit"
+    
+    # 按分支类型配置策略
+    branch_strategies:
+      feature_to_develop:
+        strategy: "squash_merge"
+        message_format: "{agent}: {task_name}\n\n{commit_list}"
+        
+      develop_to_main:
+        strategy: "merge_commit"
+        message_format: "Release: {version}\n\n{feature_list}"
+        
+      hotfix_to_main:
+        strategy: "merge_commit"
+        message_format: "Hotfix: {description}\n\nFixes: {issue_list}"
+    
+    # 自动合并条件
+    auto_merge_conditions:
+      - "all_status_checks_pass"
+      - "no_merge_conflicts"
+      - "required_reviews_approved"
+      - "up_to_date_with_base"
+    
+    # 冲突解决策略
+    conflict_resolution:
+      auto_resolve: true
+      resolution_strategies:
+        - "prefer_incoming_for_docs"
+        - "prefer_current_for_config"
+        - "manual_for_code"
+
+  # ================================
+  # 代码审查配置
+  # ================================
+  
+  code_review:
+    # 审查要求
+    review_requirements:
+      minimum_reviewers: 1
+      required_reviewer_types:
+        - "codeowner"
+        - "senior_agent"
+      
+      # Agent特定审查规则
+      agent_review_rules:
+        frontend:
+          required_reviewers: ["architect"]
+          auto_assign: ["frontend-lead"]
+          
+        backend:
+          required_reviewers: ["architect", "security"]
+          auto_assign: ["backend-lead"]
+          
+        devops:
+          required_reviewers: ["architect"]
+          auto_assign: ["devops-lead"]
+          
+        security:
+          required_reviewers: ["security-lead"]
+          mandatory: true
+    
+    # 审查清单
+    review_checklist:
+      code_quality:
+        - "代码符合项目规范"
+        - "没有明显的性能问题"
+        - "错误处理完善"
+        - "代码有适当的注释"
+        
+      testing:
+        - "包含适当的测试用例"
+        - "测试覆盖率达标"
+        - "所有测试通过"
+        
+      security:
+        - "没有安全漏洞"
+        - "敏感信息已保护"
+        - "输入验证完善"
+        
+      documentation:
+        - "API文档已更新"
+        - "README文档已更新"
+        - "变更日志已记录"
+
+  # ================================
+  # 自动化工作流
+  # ================================
+  
+  automation:
+    # 自动标签
+    auto_labeling:
+      enabled: true
+      rules:
+        - pattern: "feature/frontend/*"
+          labels: ["frontend", "feature"]
+          
+        - pattern: "feature/backend/*"
+          labels: ["backend", "feature"]
+          
+        - pattern: "hotfix/*"
+          labels: ["hotfix", "urgent"]
+          
+        - pattern: "security/*"
+          labels: ["security", "critical"]
+    
+    # 自动分配
+    auto_assignment:
+      enabled: true
+      rules:
+        - pattern: "feature/frontend/*"
+          assign_to: ["frontend-team"]
+          reviewers: ["architect"]
+          
+        - pattern: "feature/backend/*"
+          assign_to: ["backend-team"]
+          reviewers: ["architect", "security"]
+    
+    # 状态检查
+    status_checks:
+      required_checks:
+        - "ci/build"
+        - "ci/test"
+        - "ci/lint"
+        - "ci/security-scan"
+        
+      optional_checks:
+        - "ci/performance-test"
+        - "ci/e2e-test"
+
+  # ================================
+  # 通知配置
+  # ================================
+  
+  notifications:
+    # 通知渠道
+    channels:
+      slack:
+        enabled: true
+        webhook_url: "${SLACK_WEBHOOK_URL}"
+        default_channel: "#dev-team"
+        
+        channel_mapping:
+          frontend: "#frontend-team"
+          backend: "#backend-team"
+          devops: "#devops-team"
+          qa: "#qa-team"
+          security: "#security-team"
+    
+    # 通知事件
+    notification_events:
+      pull_request_opened:
+        enabled: true
+        template: "🔀 新的PR: {title} by {agent}"
+        
+      pull_request_merged:
+        enabled: true
+        template: "✅ PR已合并: {title} by {agent}"
+        
+      build_failed:
+        enabled: true
+        template: "❌ 构建失败: {branch} by {agent}"
+        urgent: true
+        
+      security_alert:
+        enabled: true
+        template: "🚨 安全告警: {description}"
+        urgent: true
+        channel: "#security-alerts"
+
+  # ================================
+  # 性能优化配置
+  # ================================
+  
+  performance:
+    # Git配置优化
+    git_config:
+      core.preloadindex: true
+      core.fscache: true
+      gc.auto: 256
+      
+    # 大文件处理
+    large_files:
+      lfs_enabled: true
+      lfs_patterns:
+        - "*.zip"
+        - "*.tar.gz"
+        - "*.dmg"
+        - "*.exe"
+        - "*.dll"
+        - "*.so"
+        - "*.dylib"
+        
+    # 忽略文件配置
+    ignore_patterns:
+      global:
+        - ".DS_Store"
+        - "Thumbs.db"
+        - "*.log"
+        - "node_modules/"
+        - ".env"
+        - ".env.local"
+        
+      agent_specific:
+        frontend:
+          - "dist/"
+          - "build/"
+          - ".next/"
+          - "coverage/"
+          
+        backend:
+          - "__pycache__/"
+          - "*.pyc"
+          - ".pytest_cache/"
+          - "venv/"
+          
+        devops:
+          - "terraform.tfstate"
+          - "terraform.tfstate.backup"
+          - ".terraform/"
