@@ -1,0 +1,60 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(npm:*)",
+      "Bash(yarn:*)",
+      "Bash(pnpm:*)",
+      "Bash(docker:*)",
+      "Bash(kubectl:*)",
+      "Bash(terraform:*)",
+      "Bash(mkdir:*)",
+      "Bash(chmod:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "MultiEdit(*)",
+      "Glob(*)",
+      "Grep(*)",
+      "LS(*)",
+      "NotebookRead(*)",
+      "NotebookEdit(*)",
+      "Task(*)",
+      "TodoWrite(*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:npmjs.com)"
+    ],
+    "deny": []
+  },
+  "hooks": {
+    "pre-user-input": "echo 'Claude Code AI Development Workflow - Ready for action! 🚀'",
+    "post-tool-use": "echo 'Tool execution completed successfully ✅'",
+    "pre-commit": ".claude/scripts/pre-commit-check.sh",
+    "pre-push": ".claude/scripts/pre-push-check.sh",
+    "post-merge": ".claude/scripts/post-merge-actions.sh"
+  },
+  "model": "claude-3-5-sonnet-20241022",
+  "default_tools": [
+    "Read",
+    "Write",
+    "Edit",
+    "Bash",
+    "Glob",
+    "Grep"
+  ],
+  "workspace": {
+    "auto_save": true,
+    "backup_on_edit": true,
+    "validate_syntax": true
+  },
+  "ai_behavior": {
+    "code_style": "clean_and_readable",
+    "test_driven": true,
+    "spec_driven": true,
+    "documentation_level": "comprehensive",
+    "security_first": true
+  }
+}

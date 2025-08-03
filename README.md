@@ -1,14 +1,98 @@
-# Claude Code 定制化研发流程模板
+# Claude Code AI Development Workflow Template
 
-> **基于Spec-Driven和Test-Driven开发的全流程AI辅助研发系统**
+> **Complete AI-powered development workflow with specialized agents and automated quality assurance**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Enabled-blue.svg)](https://claude.ai/code)
-[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)](https://github.com/quboqin/template-agenticide-vibecoding)
+[![Claude Code](https://img.shields.io/badge/Claude%20Code-Native-blue.svg)](https://claude.ai/code)
+[![Version](https://img.shields.io/badge/Version-2.0.0-green.svg)](https://github.com/quboqin/template-agenticide-vibecoding)
+[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](https://github.com/quboqin/template-agenticide-vibecoding)
 
-## 🎯 项目概述
+## 🚀 Claude Code Integration Available!
 
-本项目提供了一套完整的定制化研发流程模板，专为Claude Code环境设计，支持从需求分析到系统监控的全生命周期开发。通过多Agent角色协作、智能工作流和自动化工具链，实现高效的软件开发流程。
+**NEW**: Full Claude Code integration with 15+ specialized commands and 6 AI agents. [**Get Started →**](CLAUDE_CODE_USAGE.md)
+
+## 🎯 Project Overview
+
+This project provides a complete AI-powered development workflow template designed specifically for Claude Code. It supports the entire software development lifecycle from requirements analysis to system monitoring through multi-agent collaboration, intelligent workflows, and automated toolchains.
+
+**两个版本 / Two Versions:**
+- **[English Claude Code Integration](CLAUDE_CODE_USAGE.md)** - Production-ready Claude Code commands and agents
+- **[中文理论框架 / Chinese Theoretical Framework](#chinese-documentation)** - Original conceptual documentation
+
+## ⚡ Claude Code Features
+
+### 🤖 Specialized AI Agents
+- **Product Manager**: Market analysis, PRD creation, user research
+- **Project Manager**: Timeline tracking, risk management, team coordination  
+- **QA Specialist**: Test automation, quality reporting, coverage analysis
+- **DevOps Engineer**: Deployment automation, monitoring setup, infrastructure
+- **Technical Architect**: System design, code review, technical specifications
+- **Security Engineer**: Vulnerability assessment, compliance, secure coding
+
+### 📋 Command Categories
+
+#### Project Management (`/product:*`, `/project:*`)
+```bash
+/product:analyze ai-tools --competitors --trends    # Market analysis
+/product:prd user-auth high --stakeholders         # Create PRD
+/project:init mobile-app product --timeline 6m     # Initialize project
+/project:progress overall --dashboard              # Track progress
+```
+
+#### Development (`/spec`, `/implement`, `/review`)
+```bash
+/spec payment-system --detailed --review           # Technical specs
+/implement user-login --framework react --tdd      # Feature implementation
+/review src/auth --focus security --automated      # Code review
+```
+
+#### Quality Assurance (`/qa:*`)
+```bash
+/qa:create e2e auth-flow --framework playwright    # Create tests
+/qa:run all staging --parallel --coverage          # Execute tests
+/qa:report quality weekly --stakeholders mgmt      # Quality reports
+```
+
+#### Deployment (`/deploy:*`)
+```bash
+/deploy:prep production blue-green --validate      # Prepare deployment
+/deploy:monitor api-service --alerts --sla         # Setup monitoring
+```
+
+### 🔧 Automation Features
+- **Pre-commit Hooks**: Code quality, security scans, unit tests
+- **Pre-push Hooks**: Integration tests, build verification
+- **Post-merge Hooks**: Dependency updates, documentation generation
+- **Quality Gates**: Automated quality assurance throughout development
+
+## 🚀 Quick Start
+
+1. **Install Claude Code**: Follow the [official installation guide](https://docs.anthropic.com/en/docs/claude-code/quickstart)
+
+2. **Clone and setup**:
+   ```bash
+   git clone https://github.com/quboqin/template-agenticide-vibecoding.git
+   cd template-agenticide-vibecoding
+   git checkout claude-code-integration
+   ```
+
+3. **Copy to your project**:
+   ```bash
+   cp -r .claude /path/to/your/project/
+   cd /path/to/your/project
+   ```
+
+4. **Start using commands**:
+   ```bash
+   /product:analyze your-domain --competitors
+   /project:init your-project product --timeline 3m
+   ```
+
+📚 **[Complete Usage Guide →](CLAUDE_CODE_USAGE.md)**
+
+---
+
+# Chinese Documentation
 
 ### 核心特性
 

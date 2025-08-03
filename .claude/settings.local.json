@@ -6,7 +6,9 @@
       "Bash(git init:*)",
       "Bash(git config:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }
