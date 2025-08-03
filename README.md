@@ -12,7 +12,7 @@
 
 ### 核心特性
 
-- 🤖 **多Agent角色系统**: PM、架构师、前端、后端、运维、QA等7个专业角色
+- 🤖 **多Agent角色系统**: 产品经理、项目经理、架构师、前端、后端、运维、QA、安全等9个专业角色
 - 📋 **Spec-Driven开发**: 规格驱动的开发模式，确保需求和实现一致性  
 - 🧪 **Test-Driven开发**: 测试驱动开发，保证代码质量和可靠性
 - 🔄 **持续集成**: 自动化CI/CD流水线和质量门禁
@@ -42,35 +42,37 @@ graph TB
     B --> G[测试Commands]
     B --> H[部署Commands]
     
-    C --> I[PM Agent]
-    C --> J[Architect Agent]
-    C --> K[Frontend Agent]
-    C --> L[Backend Agent]
-    C --> M[DevOps Agent]
-    C --> N[QA Agent]
-    C --> O[Security Agent]
+    C --> I[Product Manager Agent]
+    C --> J[Project Manager Agent]
+    C --> K[Architect Agent]
+    C --> L[Frontend Agent]
+    C --> M[Backend Agent]
+    C --> N[DevOps Agent]
+    C --> O[QA Agent]
+    C --> P[Security Agent]
     
-    D --> P[Context7]
-    D --> Q[Sequential]
-    D --> R[Magic]
-    D --> S[Playwright]
+    D --> Q[Context7]
+    D --> R[Sequential]
+    D --> S[Magic]
+    D --> T[Playwright]
     
-    T[Git Worktree] --> U[多Agent并行开发]
-    V[任务管理系统] --> W[进度跟踪]
-    X[Hooks系统] --> Y[自动化流程]
+    U[Git Worktree] --> V[多Agent并行开发]
+    W[任务管理系统] --> X[进度跟踪]
+    Y[Hooks系统] --> Z[自动化流程]
 ```
 
 ### Agent角色架构
 
 ```mermaid
 graph LR
-    A[PM Agent<br/>项目管理] --> B[需求分析<br/>任务分解<br/>进度跟踪]
-    C[Architect Agent<br/>系统架构] --> D[架构设计<br/>技术选型<br/>代码审查]
-    E[Frontend Agent<br/>前端开发] --> F[UI组件<br/>用户体验<br/>前端测试]
-    G[Backend Agent<br/>后端开发] --> H[API开发<br/>数据处理<br/>服务集成]
-    I[DevOps Agent<br/>运维部署] --> J[CI/CD<br/>容器化<br/>监控配置]
-    K[QA Agent<br/>质量保证] --> L[测试设计<br/>自动化测试<br/>质量管控]
-    M[Security Agent<br/>安全审计] --> N[安全扫描<br/>漏洞修复<br/>合规检查]
+    A[Product Manager Agent<br/>产品经理] --> B[产品策略<br/>需求管理<br/>用户研究]
+    C[Project Manager Agent<br/>项目管理] --> D[项目规划<br/>进度跟踪<br/>团队协调]
+    E[Architect Agent<br/>系统架构] --> F[架构设计<br/>技术选型<br/>代码审查]
+    G[Frontend Agent<br/>前端开发] --> H[UI组件<br/>用户体验<br/>前端测试]
+    I[Backend Agent<br/>后端开发] --> J[API开发<br/>数据处理<br/>服务集成]
+    K[DevOps Agent<br/>运维部署] --> L[CI/CD<br/>容器化<br/>监控配置]
+    M[QA Agent<br/>质量保证] --> N[测试设计<br/>自动化测试<br/>质量管控]
+    O[Security Agent<br/>安全审计] --> P[安全扫描<br/>漏洞修复<br/>合规检查]
 ```
 
 ## 🚀 快速开始
@@ -120,8 +122,11 @@ graph LR
 
 1. **创建新项目**
    ```bash
-   # 使用PM Agent创建项目规划
-   /plan my-awesome-project mvp
+   # 使用Product Manager Agent创建产品规划
+   /product-analyze market --competitors --trends
+   
+   # 使用Project Manager Agent创建项目规划
+   /project-init my-awesome-project product --timeline 3-months
    ```
 
 2. **设置Agent工作空间**
@@ -158,10 +163,15 @@ graph LR
 
 ### Agent角色详细说明
 
-#### PM Agent (项目管理专家)
-- **职责**: 项目规划、任务分解、进度跟踪、风险管理
-- **主要命令**: `/plan`, `/track`, `/review`, `/estimate`
-- **文档**: [agents/pm-agent.md](agents/pm-agent.md)
+#### Product Manager Agent (产品经理专家)
+- **职责**: 产品策略规划、需求管理、用户研究、产品路线图
+- **主要命令**: `/product-analyze`, `/prd-create`, `/roadmap-plan`, `/user-feedback`
+- **文档**: [agents/product-manager-agent.md](agents/product-manager-agent.md)
+
+#### Project Manager Agent (项目管理专家)
+- **职责**: 项目规划、进度跟踪、团队协调、风险管理
+- **主要命令**: `/project-init`, `/progress-track`, `/risk-manage`, `/team-coordinate`
+- **文档**: [agents/project-manager-agent.md](agents/project-manager-agent.md)
 
 #### Architect Agent (架构师专家)  
 - **职责**: 系统设计、技术选型、代码审查、架构治理
@@ -311,15 +321,18 @@ graph TD
 
 ```mermaid
 sequenceDiagram
-    participant PM as PM Agent
+    participant ProdM as Product Manager
+    participant ProjM as Project Manager
     participant Arch as Architect Agent
     participant FE as Frontend Agent
     participant BE as Backend Agent
     participant QA as QA Agent
     participant Ops as DevOps Agent
     
-    PM->>PM: /plan project mvp
-    PM->>Arch: 需求规格评审
+    ProdM->>ProdM: /product-analyze market
+    ProdM->>ProjM: 产品需求传递
+    ProjM->>ProjM: /project-init mvp-project
+    ProjM->>Arch: 项目规格评审
     Arch->>Arch: /design system microservices
     
     par 并行开发
@@ -369,10 +382,15 @@ sequenceDiagram
 ### 并行开发示例
 
 ```bash
-# PM Agent规划项目
-./scripts/git-worktree-manager.sh create-workspace pm project-planning
-cd workspace/pm/project-planning
-/plan e-commerce-platform mvp
+# Product Manager Agent产品规划
+./scripts/git-worktree-manager.sh create-workspace product-manager market-analysis
+cd workspace/product-manager/market-analysis
+/product-analyze market --competitors --opportunities
+
+# Project Manager Agent项目规划
+./scripts/git-worktree-manager.sh create-workspace project-manager project-planning
+cd workspace/project-manager/project-planning
+/project-init e-commerce-platform product --timeline 6-months
 
 # 架构师设计系统
 ./scripts/git-worktree-manager.sh create-workspace architect system-design  
